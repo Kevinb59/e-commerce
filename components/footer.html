@@ -1,27 +1,38 @@
 <!-- components/footer.html -->
 <footer id="footer">
-  <p>© 2024 Nom du Restaurant. Tous droits réservés.</p>
-  <ul class="mentions">
-    <li><a href="mentions-legales.html">Mentions légales</a></li>
-    <li><a href="politique-de-confidentialite.html">Politique de confidentialité</a></li>
-  </ul>
+  <p id="footer-text">© 2024 Nom du Restaurant. Tous droits réservés.</p>
+  <a href="mailto:contact@nomdusite.com" id="footer-link">contact@nomdusite.com</a>
 </footer>
-<style>
-  #footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 5px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { firebaseConfig } from "../firebase-config.js";
+
+  // Initialiser Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Fonction pour charger les paramètres du footer
+  async function loadFooterSettings() {
+    try {
+      const footerDoc = await getDoc(doc(db, "designSettings", "footer"));
+      if (footerDoc.exists()) {
+        const data = footerDoc.data();
+        document.getElementById("footer").style.backgroundColor = data.backgroundColor;
+        const footerText = document.getElementById("footer-text");
+        footerText.style.color = data.fontColor;
+        footerText.style.fontSize = data.fontSize;
+        footerText.style.fontFamily = data.fontFamily;
+
+        const footerLink = document.getElementById("footer-link");
+        footerLink.style.color = data.fontColor;
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des paramètres du footer :", error);
+    }
   }
-  .mentions {
-    list-style-type: none;
-    padding: 0;
-  }
-  .mentions li {
-    display: inline;
-    margin: 0 10px;
-  }
-</style>
+
+  // Charger les paramètres lors de l'ouverture de la page
+  loadFooterSettings();
+</script>
