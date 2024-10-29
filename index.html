@@ -2,9 +2,43 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Accueil</title>
+  <title>Accueil - Restaurant</title>
   <link rel="stylesheet" href="styles.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="module">
+    // Importer les modules Firebase et la configuration depuis le fichier sécurisé
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { firebaseConfig } from './js/firebase-config.js';
+
+    // Initialiser Firebase avec la configuration importée
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Fonction pour récupérer les articles depuis Firebase
+    async function fetchArticles() {
+      const articlesList = document.getElementById('articles-list');
+      try {
+        const querySnapshot = await getDocs(collection(db, "articles"));
+        querySnapshot.forEach((doc) => {
+          const article = doc.data();
+          const articleElement = `
+            <div class="article">
+              <img src="${article.image}" alt="${article.title}" class="article-image" />
+              <h3 class="article-title">${article.title}</h3>
+              <p class="article-description">${article.description}</p>
+              <p class="article-price">${article.price.toFixed(2)} €</p>
+              <button class="article-btn">Ajouter au panier</button>
+            </div>`;
+          articlesList.innerHTML += articleElement;
+        });
+      } catch (error) {
+        console.error("Erreur lors de la récupération des articles :", error);
+      }
+    }
+
+    // Charger les articles lors de l'ouverture de la page
+    window.onload = fetchArticles;
+  </script>
 </head>
 <body>
   <!-- Espaces pour inclure les composants -->
@@ -23,24 +57,7 @@
     <!-- Section des articles -->
     <section class="articles-section">
       <h2>Nos articles</h2>
-      <div class="articles-list">
-        <!-- Simuler des articles en statique pour l'instant -->
-        <div class="article">
-          <img src="article1.jpg" alt="Article 1" class="article-image" />
-          <h3 class="article-title">Article 1</h3>
-          <p class="article-description">Description de l'article 1.</p>
-          <p class="article-price">10,00 €</p>
-          <button class="article-btn">Ajouter au panier</button>
-        </div>
-        <div class="article">
-          <img src="article2.jpg" alt="Article 2" class="article-image" />
-          <h3 class="article-title">Article 2</h3>
-          <p class="article-description">Description de l'article 2.</p>
-          <p class="article-price">15,00 €</p>
-          <button class="article-btn">Ajouter au panier</button>
-        </div>
-        <!-- Ajoutez d'autres articles ici -->
-      </div>
+      <div class="articles-list" id="articles-list"></div>
     </section>
   </main>
 
@@ -48,7 +65,7 @@
 
   <!-- Script pour charger les composants -->
   <script>
-    // Importer les composants communs
+    // Charger dynamiquement les composants communs
     fetch('components/header.html').then(response => response.text()).then(data => {
       document.getElementById('header-placeholder').innerHTML = data;
     });
@@ -60,208 +77,6 @@
     fetch('components/footer.html').then(response => response.text()).then(data => {
       document.getElementById('footer-placeholder').innerHTML = data;
     });
-
-    // Script pour la disparition du header au scroll
-    document.addEventListener("scroll", () => {
-      const header = document.getElementById("header");
-      let lastScrollY = window.scrollY;
-
-      window.onscroll = () => {
-        if (window.scrollY > lastScrollY) {
-          header.classList.add("hidden");
-        } else {
-          header.classList.remove("hidden");
-        }
-        lastScrollY = window.scrollY;
-      };
-    });
   </script>
-  
-  <!-- CSS pour les nouvelles sections -->
-  <style>
-    /* Styling du cadre de connexion/inscription */
-    .auth-section {
-      margin: 20px auto;
-      text-align: center;
-    }
-    .auth-box {
-      border: 1px solid #ddd;
-      padding: 20px;
-      width: 80%;
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: #f9f9f9;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .auth-box a {
-      color: #007bff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    /* Section des articles */
-    .articles-section {
-      padding: 20px;
-      text-align: center;
-    }
-    .articles-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-    .article {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      width: 240px;
-      background-color: #fff;
-      transition: transform 0.2s ease-in-out;
-    }
-    .article:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    .article img {
-      width: 100%;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-    }
-    .article-title {
-      font-size: 20px;
-      margin: 15px 0;
-      font-weight: 600;
-    }
-    .article-description {
-      font-size: 14px;
-      color: #666;
-      margin: 10px;
-    }
-    .article-price {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-    }
-    .article-btn {
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      margin: 15px;
-      transition: background-color 0.2s ease;
-    }
-    .article-btn:hover {
-      background-color: #0056b3;
-    }
-
-    /* Header Styles */
-    #header-placeholder #header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      background-color: #fff;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-      transition: transform 0.3s ease;
-    }
-    .logo-placeholder {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background-color: #ddd;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
-      color: #666;
-    }
-    .restaurant-name {
-      margin-left: 15px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
-    }
-    .hidden {
-      transform: translateY(-100%);
-    }
-
-    /* Toggle Menu Styles */
-    #toggle-menu-placeholder #toggle-menu {
-      position: sticky;
-      top: 80px;
-      background-color: #f8f8f8;
-      z-index: 900;
-      display: flex;
-      justify-content: center;
-      padding: 10px 0;
-    }
-    .menu-btn {
-      display: none;
-    }
-    .menu {
-      list-style-type: none;
-      padding: 0;
-      display: flex;
-      gap: 30px;
-    }
-    .menu li {
-      padding: 10px 0;
-    }
-    .menu li a {
-      text-decoration: none;
-      font-size: 18px;
-      color: #007bff;
-      transition: color 0.2s ease;
-    }
-    .menu li a:hover {
-      color: #0056b3;
-    }
-
-    /* Footer Styles */
-    #footer-placeholder #footer {
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 20px 10px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-    .mentions {
-      list-style-type: none;
-      padding: 0;
-    }
-    .mentions li {
-      display: inline;
-      margin: 0 10px;
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 768px) {
-      .menu {
-        flex-direction: column;
-      }
-      .menu-btn {
-        display: block;
-        font-size: 24px;
-        cursor: pointer;
-      }
-      .menu {
-        display: none;
-      }
-      .menu-btn.active + .menu {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-      }
-      .article {
-        width: 90%;
-      }
-    }
-  </style>
 </body>
 </html>
