@@ -46,4 +46,4 @@ Thumbs.db
 
 # Firebase configurations
 firebase-debug.log
-
+/js/firebase-config.js # Ignorer le fichier de configuration Firebase
