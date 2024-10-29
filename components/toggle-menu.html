@@ -1,81 +1,48 @@
 <!-- components/toggle-menu.html -->
-<nav>
-  <div class="menu-icon" onclick="toggleMenu()">
-    &#9776;<span>Menu</span>
-  </div>
-  <ul id="menu">
+<nav id="toggle-menu">
+  <button class="menu-btn">☰ Menu</button>
+  <ul class="menu">
     <li><a href="index.html">Accueil</a></li>
     <li><a href="about.html">À propos</a></li>
     <li><a href="menu.html">Menu</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
 </nav>
-<style>
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #FFD700;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  .menu-icon {
-    font-size: 24px;
-    display: none;
-    cursor: pointer;
-    align-items: center;
-  }
-  .menu-icon span {
-    margin-left: 5px;
-    font-weight: 600;
-  }
-  #menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-  }
-  #menu li {
-    margin: 0 15px;
-  }
-  #menu li a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 600;
-  }
-  
-  /* Menu Mobile */
-  @media (max-width: 768px) {
-    .menu-icon {
-      display: flex;
-    }
-    #menu {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      background-color: #FFD700;
-      position: absolute;
-      top: 50px;
-      left: 0;
-      padding: 10px 0;
-    }
-    #menu.show {
-      display: flex;
-    }
-    #menu li {
-      margin: 10px 0;
-    }
-  }
-</style>
 
-<script>
-  function toggleMenu() {
-    const menu = document.getElementById('menu');
-    menu.classList.toggle('show');
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { firebaseConfig } from "../firebase-config.js";
+
+  // Initialiser Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Fonction pour charger les paramètres du toggle menu
+  async function loadToggleMenuSettings() {
+    try {
+      const toggleMenuDoc = await getDoc(doc(db, "designSettings", "toggleMenu"));
+      if (toggleMenuDoc.exists()) {
+        const data = toggleMenuDoc.data();
+        document.getElementById("toggle-menu").style.backgroundColor = data.backgroundColor;
+        const menuLinks = document.querySelectorAll("#toggle-menu .menu a");
+        menuLinks.forEach(link => {
+          link.style.color = data.fontColor;
+          link.style.fontSize = data.fontSize;
+          link.style.fontFamily = data.fontFamily;
+          link.addEventListener("mouseover", () => {
+            link.style.color = data.hoverColor;
+          });
+          link.addEventListener("mouseout", () => {
+            link.style.color = data.fontColor;
+          });
+        });
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des paramètres du toggle menu :", error);
+    }
   }
+
+  // Charger les paramètres lors de l'ouverture de la page
+  loadToggleMenuSettings();
 </script>
