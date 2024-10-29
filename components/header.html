@@ -1,34 +1,37 @@
 <!-- components/header.html -->
 <header id="header">
-  <div class="header-content">
-    <img src="logo.png" alt="Logo du restaurant" class="logo" />
-    <h1 class="restaurant-name">Nom du Restaurant</h1>
-  </div>
+  <img src="" alt="Logo du restaurant" class="logo" id="header-logo" />
+  <h1 class="restaurant-name" id="restaurant-name"></h1>
 </header>
-<style>
-  #header {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #FFD700;
-    width: 100%;
-    transition: transform 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { firebaseConfig } from "../firebase-config.js";
+
+  // Initialiser Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Fonction pour charger les paramètres du header
+  async function loadHeaderSettings() {
+    try {
+      const headerDoc = await getDoc(doc(db, "designSettings", "header"));
+      if (headerDoc.exists()) {
+        const data = headerDoc.data();
+        document.getElementById("header").style.height = data.height;
+        document.getElementById("header").style.backgroundColor = data.backgroundColor;
+        document.getElementById("header").style.backgroundImage = `url(${data.backgroundImage})`;
+        document.getElementById("restaurant-name").innerText = data.restaurantName;
+        document.getElementById("restaurant-name").style.fontSize = data.fontSize;
+        document.getElementById("restaurant-name").style.fontFamily = data.fontFamily;
+        document.getElementById("header-logo").src = data.logoUrl;
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des paramètres du header :", error);
+    }
   }
 
-  .header-content {
-    display: flex;
-    align-items: center;
-  }
-
-  .logo {
-    height: 50px;
-    margin-right: 10px; /* Espace entre le logo et le nom */
-  }
-
-  .restaurant-name {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
-</style>
+  // Charger les paramètres lors de l'ouverture de la page
+  loadHeaderSettings();
+</script>
