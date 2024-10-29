@@ -1,0 +1,25 @@
+<!-- components/header.html -->
+<header id="header">
+  <img src="logo.png" alt="Logo du restaurant" class="logo" />
+  <h1 class="restaurant-name">Nom du Restaurant</h1>
+</header>
+<style>
+  #header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+  }
+  .hidden {
+    transform: translateY(-100%);
+  }
+  .logo {
+    height: 50px;
+  }
+</style>
