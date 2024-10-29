@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Accueil</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Espaces pour inclure les composants -->
+  <div id="header-placeholder"></div>
+  <div id="toggle-menu-placeholder"></div>
+
+  <main>
+    <!-- Cadre de connexion/inscription -->
+    <section class="auth-section">
+      <div class="auth-box">
+        <h2>Bienvenue !</h2>
+        <p>Pour passer une commande, veuillez vous <a href="login.html">connecter</a> ou vous <a href="register.html">inscrire</a>.</p>
+      </div>
+    </section>
+
+    <!-- Section des articles -->
+    <section class="articles-section">
+      <h2>Nos articles</h2>
+      <div class="articles-list">
+        <!-- Simuler des articles en statique pour l'instant -->
+        <div class="article">
+          <img src="article1.jpg" alt="Article 1" class="article-image" />
+          <h3 class="article-title">Article 1</h3>
+          <p class="article-description">Description de l'article 1.</p>
+          <p class="article-price">10,00 €</p>
+          <button class="article-btn">Ajouter au panier</button>
+        </div>
+        <div class="article">
+          <img src="article2.jpg" alt="Article 2" class="article-image" />
+          <h3 class="article-title">Article 2</h3>
+          <p class="article-description">Description de l'article 2.</p>
+          <p class="article-price">15,00 €</p>
+          <button class="article-btn">Ajouter au panier</button>
+        </div>
+        <!-- Ajoutez d'autres articles ici -->
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <!-- Script pour charger les composants -->
+  <script>
+    // Importer les composants communs
+    fetch('components/header.html').then(response => response.text()).then(data => {
+      document.getElementById('header-placeholder').innerHTML = data;
+    });
+
+    fetch('components/toggle-menu.html').then(response => response.text()).then(data => {
+      document.getElementById('toggle-menu-placeholder').innerHTML = data;
+    });
+
+    fetch('components/footer.html').then(response => response.text()).then(data => {
+      document.getElementById('footer-placeholder').innerHTML = data;
+    });
+
+    // Script pour la disparition du header au scroll
+    document.addEventListener("scroll", () => {
+      const header = document.getElementById("header");
+      let lastScrollY = window.scrollY;
+
+      window.onscroll = () => {
+        if (window.scrollY > lastScrollY) {
+          header.classList.add("hidden");
+        } else {
+          header.classList.remove("hidden");
+        }
+        lastScrollY = window.scrollY;
+      };
+    });
+  </script>
+  
+  <!-- CSS pour les nouvelles sections -->
+  <style>
+    .auth-section {
+      margin: 20px auto;
+      text-align: center;
+    }
+    .auth-box {
+      border: 1px solid #ddd;
+      padding: 20px;
+      width: 80%;
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #f9f9f9;
+    }
+    .auth-box a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .articles-section {
+      padding: 20px;
+      text-align: center;
+    }
+    .articles-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .article {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin: 10px;
+      width: 200px;
+      padding: 10px;
+      background-color: #fff;
+    }
+    .article img {
+      width: 100%;
+      height: auto;
+      border-bottom: 1px solid #ddd;
+    }
+    .article h3 {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    .article-description {
+      font-size: 14px;
+      color: #666;
+    }
+    .article-price {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+    .article-btn {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .article-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</body>
+</html>
