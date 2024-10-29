@@ -19,13 +19,25 @@
       const headerDoc = await getDoc(doc(db, "designSettings", "header"));
       if (headerDoc.exists()) {
         const data = headerDoc.data();
+        console.log("Données du header :", data); // Ajouter un log des données récupérées
+
+        // Appliquer la hauteur, le nom et le logo
         document.getElementById("header").style.height = data.height;
-        document.getElementById("header").style.backgroundColor = data.backgroundColor;
-        document.getElementById("header").style.backgroundImage = `url(${data.backgroundImage})`;
         document.getElementById("restaurant-name").innerText = data.restaurantName;
         document.getElementById("restaurant-name").style.fontSize = data.fontSize;
         document.getElementById("restaurant-name").style.fontFamily = data.fontFamily;
         document.getElementById("header-logo").src = data.logoUrl;
+
+        // Appliquer le type de fond
+        if (data.backgroundType === "color") {
+          document.getElementById("header").style.backgroundColor = data.backgroundColor;
+          document.getElementById("header").style.backgroundImage = "none";
+        } else if (data.backgroundType === "image") {
+          document.getElementById("header").style.backgroundImage = `url(${data.backgroundImage})`;
+          document.getElementById("header").style.backgroundColor = "transparent";
+        }
+      } else {
+        console.error("Le document du header n'existe pas dans Firestore.");
       }
     } catch (error) {
       console.error("Erreur lors du chargement des paramètres du header :", error);
