@@ -10,10 +10,13 @@
 </nav>
 <style>
   #toggle-menu {
-    background-color: #f8f8f8;
-    z-index: 900;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    transition: top 0.3s ease;
+    background-color: #f8f8f8;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   .menu-btn {
     font-size: 24px;
@@ -28,26 +31,4 @@
   .menu li {
     padding: 10px;
   }
-  .sticky {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background-color: #f8f8f8;
-  }
 </style>
-
-<script>
-  // Ajouter un script pour rendre le menu sticky lorsque la page est défilée
-  window.addEventListener('scroll', () => {
-    const toggleMenu = document.getElementById('toggle-menu');
-    const headerHeight = document.getElementById('header').offsetHeight;
-
-    if (window.scrollY >= headerHeight) {
-      toggleMenu.classList.add('sticky');
-    } else {
-      toggleMenu.classList.remove('sticky');
-    }
-  });
-</script>
