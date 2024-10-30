@@ -27,6 +27,7 @@
         document.getElementById("restaurant-name").style.fontSize = data.fontSize;
         document.getElementById("restaurant-name").style.fontFamily = data.fontFamily;
         document.getElementById("header-logo").src = data.logoUrl;
+        document.getElementById("header-logo").style.height = data.logoHeight; // Utiliser la hauteur du logo tout en gardant les proportions
 
         // Appliquer le type de fond
         if (data.backgroundType === "color") {
