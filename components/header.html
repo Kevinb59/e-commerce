@@ -1,7 +1,9 @@
 <!-- components/header.html -->
 <header id="header">
-  <img src="" alt="Logo du restaurant" class="logo" id="header-logo" />
-  <h1 class="restaurant-name" id="restaurant-name"></h1>
+  <div class="header-container">
+    <img src="" alt="Logo du restaurant" class="logo" id="header-logo" />
+    <h1 class="restaurant-name" id="restaurant-name"></h1>
+  </div>
 </header>
 
 <script type="module">
@@ -27,7 +29,7 @@
         document.getElementById("restaurant-name").style.fontSize = data.fontSize;
         document.getElementById("restaurant-name").style.fontFamily = data.fontFamily;
         document.getElementById("header-logo").src = data.logoUrl;
-        document.getElementById("header-logo").style.height = data.logoHeight; // Utiliser la hauteur du logo tout en gardant les proportions
+        document.getElementById("header-logo").style.height = data.logoHeight;
 
         // Appliquer le type de fond
         if (data.backgroundType === "color") {
@@ -48,3 +50,26 @@
   // Charger les paramètres lors de l'ouverture de la page
   loadHeaderSettings();
 </script>
+
+<style>
+  #header {
+    display: flex;
+    justify-content: center; /* Centrer les éléments dans le header */
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo {
+    margin-right: 15px; /* Espace entre le logo et le nom */
+  }
+
+  .restaurant-name {
+    font-weight: bold;
+    color: #333;
+  }
+</style>
