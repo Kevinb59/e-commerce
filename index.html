@@ -2,11 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Accueil - Restaurant</title>
+  <title id="page-title">Accueil - Restaurant</title>
   <link rel="stylesheet" href="styles/style-index.css">
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
     import { firebaseConfig } from './js/firebase-config.js';
 
     const app = initializeApp(firebaseConfig);
@@ -33,7 +33,10 @@
       }
     }
 
-    window.onload = fetchArticles;
+    window.onload = async () => {
+      await loadDynamicTitle();
+      fetchArticles();
+    };
 
     window.openPopup = function (id, title, image, description, price) {
       const popup = document.getElementById('popup');
@@ -54,11 +57,39 @@
         popup.classList.remove('active');
       }
     };
+
+    async function loadDynamicTitle() {
+      try {
+        const headerDoc = await getDoc(doc(db, "designSettings", "header"));
+        if (headerDoc.exists()) {
+          const headerData = headerDoc.data();
+          document.getElementById('page-title').innerText = `Accueil - ${headerData.restaurantName}`;
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération du nom de restaurant :", error);
+      }
+    }
   </script>
 </head>
 <body>
-  <div id="toggle-menu-placeholder"></div>
-  <div id="header-placeholder"></div>
+  <!-- Toggle Menu -->
+  <nav id="toggle-menu">
+    <button class="menu-btn">☰ Menu</button>
+    <ul class="menu">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="about.html">À propos</a></li>
+      <li><a href="menu.html">Menu</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header -->
+  <header id="header">
+    <div class="header-container">
+      <img src="" alt="Logo du restaurant" class="logo" id="header-logo" />
+      <h1 class="restaurant-name" id="restaurant-name"></h1>
+    </div>
+  </header>
 
   <main>
     <section class="auth-section">
@@ -84,34 +115,10 @@
     </div>
   </div>
 
-  <div id="footer-placeholder"></div>
-
-  <script>
-    // Fonction pour charger un composant et exécuter les scripts internes
-    async function loadComponent(componentId, filePath) {
-      const response = await fetch(filePath);
-      const componentHTML = await response.text();
-      document.getElementById(componentId).innerHTML = componentHTML;
-
-      // Exécuter les scripts du composant après le chargement
-      const componentDiv = document.getElementById(componentId);
-      const scripts = componentDiv.getElementsByTagName('script');
-      for (const script of scripts) {
-        const newScript = document.createElement('script');
-        newScript.type = script.type || 'text/javascript';
-        if (script.src) {
-          newScript.src = script.src;
-        } else {
-          newScript.textContent = script.textContent;
-        }
-        componentDiv.appendChild(newScript);
-      }
-    }
-
-    // Charger dynamiquement les composants communs
-    loadComponent('header-placeholder', 'components/header.html');
-    loadComponent('toggle-menu-placeholder', 'components/toggle-menu.html');
-    loadComponent('footer-placeholder', 'components/footer.html');
-  </script>
+  <!-- Footer -->
+  <footer id="footer">
+    <p id="footer-text">© 2024 <span id="restaurant-name-footer"></span>. Tous droits réservés.</p>
+    <a href="mailto:" id="footer-link">contact@nomdusite.com</a>
+  </footer>
 </body>
 </html>
