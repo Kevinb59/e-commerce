@@ -48,7 +48,6 @@
       document.getElementById('popup').classList.remove('active');
     };
 
-    // Fermer le popup lorsqu'on clique à l'extérieur du contenu
     window.onclick = function (event) {
       const popup = document.getElementById('popup');
       if (event.target === popup) {
@@ -88,17 +87,31 @@
   <div id="footer-placeholder"></div>
 
   <script>
-    fetch('components/header.html').then(response => response.text()).then(data => {
-      document.getElementById('header-placeholder').innerHTML = data;
-    });
+    // Fonction pour charger un composant et exécuter les scripts internes
+    async function loadComponent(componentId, filePath) {
+      const response = await fetch(filePath);
+      const componentHTML = await response.text();
+      document.getElementById(componentId).innerHTML = componentHTML;
 
-    fetch('components/toggle-menu.html').then(response => response.text()).then(data => {
-      document.getElementById('toggle-menu-placeholder').innerHTML = data;
-    });
+      // Exécuter les scripts du composant après le chargement
+      const componentDiv = document.getElementById(componentId);
+      const scripts = componentDiv.getElementsByTagName('script');
+      for (const script of scripts) {
+        const newScript = document.createElement('script');
+        newScript.type = script.type || 'text/javascript';
+        if (script.src) {
+          newScript.src = script.src;
+        } else {
+          newScript.textContent = script.textContent;
+        }
+        componentDiv.appendChild(newScript);
+      }
+    }
 
-    fetch('components/footer.html').then(response => response.text()).then(data => {
-      document.getElementById('footer-placeholder').innerHTML = data;
-    });
+    // Charger dynamiquement les composants communs
+    loadComponent('header-placeholder', 'components/header.html');
+    loadComponent('toggle-menu-placeholder', 'components/toggle-menu.html');
+    loadComponent('footer-placeholder', 'components/footer.html');
   </script>
 </body>
 </html>
