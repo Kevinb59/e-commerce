@@ -9,10 +9,13 @@
     import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
     import { firebaseConfig } from './js/firebase-config.js';
 
+    // Initialisation de Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Fonction pour récupérer les articles
     async function fetchArticles() {
+      console.log("Chargement des articles...");
       const articlesList = document.getElementById('articles-list');
       try {
         const querySnapshot = await getDocs(collection(db, "articles"));
@@ -33,11 +36,31 @@
       }
     }
 
-    window.onload = async () => {
-      await loadDynamicTitle();
-      fetchArticles();
-    };
+    // Fonction pour charger le titre dynamique
+    async function loadDynamicTitle() {
+      console.log("Chargement du nom du restaurant...");
+      try {
+        const headerDoc = await getDoc(doc(db, "designSettings", "header"));
+        if (headerDoc.exists()) {
+          const headerData = headerDoc.data();
+          document.getElementById('page-title').innerText = `Accueil - ${headerData.restaurantName}`;
+          document.getElementById('restaurant-name').innerText = headerData.restaurantName;
+          document.getElementById('header-logo').src = headerData.logoUrl;
+        } else {
+          console.error("Le document du header n'existe pas dans Firestore.");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération du nom de restaurant :", error);
+      }
+    }
 
+    // Charger le titre et les articles au chargement de la page
+    window.addEventListener("load", () => {
+      loadDynamicTitle();
+      fetchArticles();
+    });
+
+    // Fonction pour ouvrir le popup
     window.openPopup = function (id, title, image, description, price) {
       const popup = document.getElementById('popup');
       document.getElementById('popup-title').innerText = title;
@@ -47,28 +70,18 @@
       popup.classList.add('active');
     };
 
+    // Fonction pour fermer le popup
     window.closePopup = function () {
       document.getElementById('popup').classList.remove('active');
     };
 
+    // Fermer le popup lorsqu'on clique à l'extérieur
     window.onclick = function (event) {
       const popup = document.getElementById('popup');
       if (event.target === popup) {
         popup.classList.remove('active');
       }
     };
-
-    async function loadDynamicTitle() {
-      try {
-        const headerDoc = await getDoc(doc(db, "designSettings", "header"));
-        if (headerDoc.exists()) {
-          const headerData = headerDoc.data();
-          document.getElementById('page-title').innerText = `Accueil - ${headerData.restaurantName}`;
-        }
-      } catch (error) {
-        console.error("Erreur lors de la récupération du nom de restaurant :", error);
-      }
-    }
   </script>
 </head>
 <body>
