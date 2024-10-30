@@ -1,7 +1,7 @@
 <!-- components/footer.html -->
 <footer id="footer">
   <p id="footer-text">© 2024 <span id="restaurant-name-footer"></span>. Tous droits réservés.</p>
-  <a href="mailto:contact@nomdusite.com" id="footer-link">contact@nomdusite.com</a>
+  <a href="mailto:" id="footer-link">contact@nomdusite.com</a>
 </footer>
 
 <script type="module">
@@ -30,11 +30,13 @@
         footerLink.style.color = data.fontColor;
       }
 
-      // Récupérer le nom du restaurant depuis le document "header"
+      // Récupérer le nom du restaurant et l'email depuis le document "header"
       const headerDoc = await getDoc(doc(db, "designSettings", "header"));
       if (headerDoc.exists()) {
         const headerData = headerDoc.data();
         document.getElementById("restaurant-name-footer").innerText = headerData.restaurantName;
+        document.getElementById("footer-link").innerText = headerData.contactEmail;
+        document.getElementById("footer-link").href = `mailto:${headerData.contactEmail}`;
       }
     } catch (error) {
       console.error("Erreur lors du chargement des paramètres du footer :", error);
@@ -44,3 +46,16 @@
   // Charger les paramètres lors de l'ouverture de la page
   loadFooterSettings();
 </script>
+
+<style>
+  #footer {
+    text-align: center;
+    padding: 5px 0;
+  }
+
+  #footer-text,
+  #footer-link {
+    display: block;
+    margin: 5px 0;
+  }
+</style>
